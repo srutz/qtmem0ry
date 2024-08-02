@@ -1,0 +1,273 @@
+
+#include <cmath>
+#include <QDebug>
+#include <QString>
+#include <QGraphicsItem>
+#include <QResizeEvent>
+#include <QDir>
+
+
+#include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QEventLoop>
+#include <QUrl>
+#include <QDebug>
+#include <QThread>
+#include <QTimer>
+
+#include <cassert>
+#include <random>
+#include <algorithm>
+#include <vector>
+
+
+#include "downloadhandler.h"
+#include "util.h"
+#include "memorypanel.h"
+#include "memorycard.h"
+
+
+MemoryPanel::MemoryPanel(QWidget *parent):
+    m_gameState(GameState::STOPPED),
+    QWidget(parent)
+{
+}
+
+void MemoryPanel::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event); // base class handler
+    this->layoutChildren();
+}
+
+
+void MemoryPanel::setupChildren()
+{
+    auto backgroundPixmap = QPixmap("/home/sr/background.png");
+
+    QThread *downloadThread = new QThread();
+    downloadThread->setObjectName("downloader thread");
+    DownloadHandler *handler = new DownloadHandler();
+    handler->moveToThread(downloadThread);
+
+    QObject::connect(downloadThread, &QThread::started, handler, &DownloadHandler::download);
+    QObject::connect(handler, &DownloadHandler::completed, this, [=]() {
+        handler->deleteLater();
+        this->layoutChildren();
+        this->updateStatusMessage();
+    });
+
+    QObject::connect(handler, &DownloadHandler::imageCompleted, this, [=](int i, int n, QByteArray data) {
+        qDebug() << "image " << i << " downloaded " << QThread::currentThread()->objectName();
+        Util::findStatusBar()->showMessage(QString("Retrieved Image %1 of %2").arg(i + 1).arg(n), 5000);
+        QPixmap pixmap;
+        bool success = pixmap.loadFromData(data);
+        if (!success) {
+            qDebug() << "failed to load image " << i << " into pixmap";
+            return;
+        }
+        int size = qMin(pixmap.width(), pixmap.height());
+        QRect cropRect;
+        if (pixmap.width() > pixmap.height()) {
+            int offsetX = (pixmap.width() - size) / 2;
+            cropRect.setRect(offsetX, 0, size, size);
+        } else {
+            int offsetY = (pixmap.height() - size) / 2;
+            cropRect.setRect(0, offsetY, size, size);
+        }
+        auto squaredPixmap = pixmap.copy(cropRect);
+        for (auto j = 0; j < 2; j++) {
+            QString key = QString::asprintf("key%03d", i);
+            auto card = new MemoryCard(this, key, squaredPixmap, backgroundPixmap, this);
+            card->setFixedSize(192, 192);
+            card->show();
+            m_order.push_back(i * 2 + j);
+        }
+    });
+    QObject::connect(downloadThread, &QThread::finished, downloadThread, &QObject::deleteLater);
+    downloadThread->start();
+}
+
+void MemoryPanel::updateStatusMessage()
+{
+    QString message = "";
+    switch (m_gameState) {
+    case STARTED:
+        message += QString("Game started. Hit #%1. Miss #%2").arg(
+                    QString::number(m_stats.hits),
+                    QString::number(m_stats.misses));
+        break;
+    case STOPPED:
+        message += "Game not started";
+        break;
+    case OVER:
+        message += QString("Game Over. Hit #%1. Miss #%2. Total moves #%3").arg(
+                       QString::number(m_stats.hits),
+                       QString::number(m_stats.misses),
+                       QString::number(m_stats.moves))
+            ;
+        break;
+    }
+    Util::findStatusBar()->showMessage(message);
+}
+
+
+void MemoryPanel::layoutChildren()
+{
+    auto aw = this->size().width();
+    auto ah = this->size().height();
+    auto cards = std::vector<MemoryCard*>();
+    for(auto child : children()) {
+        auto card = qobject_cast<MemoryCard*>(child);
+        if (card) {
+            cards.push_back(card);
+        }
+    }
+    auto size = static_cast<int>(sqrt(cards.size()));
+    if (m_gameState != GameState::STARTED) {
+        auto i = 0;
+        for (auto card : cards) {
+            auto x = i % 2 == 0 ? - 200 : aw + 200;
+            auto y = i % size < size / 2 ? - 200 : ah + 200;
+            card->setPositionA(QPoint(x, y), 500);
+            i++;
+        }
+        return;
+    }
+    auto padding = 0;
+    auto dist = 10;
+    auto tw = 192;
+    auto th = 192;
+    auto wantedw = size * tw + (size - 1) * dist;
+    auto wantedh = size * th + (size - 1) * dist;
+    auto x0 = (int) floor(.5 * (aw - wantedw));
+    auto y0 = (int) floor(.5 * (ah - wantedh));
+    //qDebug() << "layoutScene(): aw=" << aw << ", ah=" << ah << ", x0" << x0 << ", size=" << cards.size();
+    auto y = padding + y0;
+    for (int row = 0; row < size; row++) {
+        auto x = padding + x0;
+        for (int col = 0; col < size; col++) {
+            auto item = cards[m_order[row * size + col]];
+            item->setPositionA(QPoint(x, y), 500);
+            x += tw + dist;
+        }
+        y += tw + dist;
+    }
+}
+
+Stats& MemoryPanel::stats() const {
+    return m_stats;
+}
+
+GameState MemoryPanel::gameState() const
+{
+    return m_gameState;
+}
+
+void MemoryPanel::setGameState(GameState gameState)
+{
+    if (this->m_gameState == gameState) {
+        return;
+    }
+    this->m_gameState = gameState;
+    if (this->m_gameState == GameState::STARTED) {
+        /* cleanup */
+        std::random_device rd;
+        std::default_random_engine eng(rd());
+        std::shuffle(m_order.begin(), m_order.end(), eng);
+        for(auto child : children()) {
+            auto card = qobject_cast<MemoryCard*>(child);
+            if (card) {
+                card->setPresent(true);
+                if (card->flipState() != FlipState::FLIPPED) {
+                    card->flip();
+                }
+            }
+        }
+        m_seen.clear();
+    }
+    layoutChildren();
+    updateStatusMessage();
+}
+
+void MemoryPanel::cardClicked(MemoryCard *card)
+{
+    switch (m_gameState) {
+    case STOPPED:
+        Util::showMessage("The Game is not started.");
+        break;
+    case OVER:
+        Util::showMessage("The Game is over, start a new game.");
+        break;
+    case STARTED:
+        auto visibleCards = getVisibleCards();
+        for (auto card : visibleCards) {
+            m_seen.insert(card->key());
+        }
+        /* we have 2 cards unflipped, then do check and remove them if they match */
+        if (visibleCards.size() >= 2) {
+            return;
+        } else {
+            if (card->flipState() == FlipState::FLIPPED) {
+                card->flip([=]() {
+                    checkForMatch();
+                });
+            }
+        }
+        break;
+    }
+}
+
+std::vector<MemoryCard*> MemoryPanel::getVisibleCards() {
+    std::vector<MemoryCard*> unflippedCards;
+    for(auto child : children()) {
+        auto card = qobject_cast<MemoryCard*>(child);
+        if (card && card->present() && Util::isAnyEquals(card->flipState(), { FlipState::UNFLIPPED, FlipState::UNFLIPPING })) {
+            unflippedCards.push_back(card);
+        }
+    }
+    return unflippedCards;
+}
+
+void MemoryPanel::checkForMatch() {
+    auto visibleCards = getVisibleCards();
+    qDebug() << "check for match " << visibleCards.size();
+    if (visibleCards.size() > 2) {
+        // wrong invariant, only show 2 cards max
+        assert(false);
+    } else if (visibleCards.size() == 1) {
+        m_firstCard = visibleCards[0];
+    } else if (visibleCards.size() == 2) {
+        auto card1 = visibleCards[0];
+        auto card2 = visibleCards[1];
+        m_stats.setMoves(m_stats.moves() + 1);
+        if (card1->key() == card2->key()) {
+            card1->setPresent(false);
+            card2->setPresent(false);
+
+            auto presentCount = 0;
+            for(auto child : children()) {
+                auto card = qobject_cast<MemoryCard*>(child);
+                if (card && card->present()) {
+                    presentCount++;
+                }
+            }
+            if (presentCount == 0) {
+                setGameState(GameState::OVER);
+            }
+            m_stats.setHits(m_stats.hits() + 1);
+        } else {
+            if (m_firstCard && m_seen.contains(m_firstCard->key())) {
+                m_stats.setSeenMisses(m_stats.seenMisses() + 1);
+            }
+            card1->flip();
+            card2->flip();
+            m_stats.setMisses(m_stats.misses() + 1);
+        }
+        updateStatusMessage();
+    }
+}
+
+
+
