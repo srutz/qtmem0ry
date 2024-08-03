@@ -44,7 +44,7 @@ void MemoryPanel::resizeEvent(QResizeEvent *event)
 
 void MemoryPanel::setupChildren()
 {
-    auto backgroundPixmap = QPixmap("/home/sr/background.png");
+    auto backgroundPixmap = QPixmap(":/images/background.png");
 
     QThread *downloadThread = new QThread();
     downloadThread->setObjectName("downloader thread");
@@ -95,17 +95,17 @@ void MemoryPanel::updateStatusMessage()
     switch (m_gameState) {
     case STARTED:
         message += QString("Game started. Hit #%1. Miss #%2").arg(
-                    QString::number(m_stats.hits),
-                    QString::number(m_stats.misses));
+            QString::number(m_stats.hits()),
+            QString::number(m_stats.misses()));
         break;
     case STOPPED:
         message += "Game not started";
         break;
     case OVER:
         message += QString("Game Over. Hit #%1. Miss #%2. Total moves #%3").arg(
-                       QString::number(m_stats.hits),
-                       QString::number(m_stats.misses),
-                       QString::number(m_stats.moves))
+            QString::number(m_stats.hits()),
+            QString::number(m_stats.misses()),
+            QString::number(m_stats.moves()))
             ;
         break;
     }
@@ -156,7 +156,7 @@ void MemoryPanel::layoutChildren()
     }
 }
 
-Stats& MemoryPanel::stats() const {
+const Stats& MemoryPanel::stats() const {
     return m_stats;
 }
 
@@ -185,6 +185,7 @@ void MemoryPanel::setGameState(GameState gameState)
                 }
             }
         }
+        m_stats.reset();
         m_seen.clear();
     }
     layoutChildren();
@@ -202,9 +203,6 @@ void MemoryPanel::cardClicked(MemoryCard *card)
         break;
     case STARTED:
         auto visibleCards = getVisibleCards();
-        for (auto card : visibleCards) {
-            m_seen.insert(card->key());
-        }
         /* we have 2 cards unflipped, then do check and remove them if they match */
         if (visibleCards.size() >= 2) {
             return;
@@ -264,6 +262,9 @@ void MemoryPanel::checkForMatch() {
             card1->flip();
             card2->flip();
             m_stats.setMisses(m_stats.misses() + 1);
+        }
+        for (auto card : visibleCards) {
+            m_seen.insert(card->key());
         }
         updateStatusMessage();
     }

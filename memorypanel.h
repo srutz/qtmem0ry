@@ -29,32 +29,32 @@ public:
     void setHits(int hits) {
         if (hits == m_hits) return;
         this->m_hits = hits;
-        emit changed();
+        emit changed(*this);
     }
 
     int misses() const { return this->m_misses; }
     void setMisses(int misses) {
         if (misses == m_misses) return;
         this->m_misses = misses;
-        emit changed();
+        emit changed(*this);
     }
 
     int seenMisses() const { return this->m_seenMisses; }
     void setSeenMisses(int seenMisses) {
         if (seenMisses == m_seenMisses) return;
         this->m_seenMisses = seenMisses;
-        emit changed();
+        emit changed(*this);
     }
 
     int moves() const { return this->m_moves; }
     void setMoves(int moves) {
         if (moves == m_moves) return;
         this->m_moves = moves;
-        emit changed();
+        emit changed(*this);
     }
 
 signals:
-    void changed();
+    void changed(const Stats& stats);
 
 private:
     int m_hits;
@@ -77,7 +77,8 @@ public:
     void layoutChildren();
     void updateStatusMessage();
 
-    Stats& stats() const;
+    const Stats& stats() const;
+    const Stats* statsPointer() const { return &m_stats; }
 
     GameState gameState() const;
     void setGameState(GameState);

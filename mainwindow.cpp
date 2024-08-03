@@ -68,16 +68,25 @@ MainWindow::MainWindow(QWidget *parent)
     splitter->setSizes(sizes);
 
     QVector<QPair<QString, QString>> data = {
-        {"Key1", "Value1"},
-        {"Key2", "Value2"},
-        {"Key3", "Value3"},
     };
-
     auto model = new KeyValueTableModel();
     model->setData(data);
     ui->tableView->setModel(model);
 
-    memoryPanel->stats().connect()
+    QObject::connect(&memoryPanel->stats(), &Stats::changed, this, [=] (const Stats& stats) {
+        updateStats(stats);
+    });
+    updateStats(memoryPanel->stats());
+}
+
+void MainWindow::updateStats(const Stats& stats) {
+    auto model = dynamic_cast<KeyValueTableModel*>(ui->tableView->model());
+    QVector<QPair<QString, QString>> data = {
+        { "Hits", QString::number(stats.hits()) },
+        { "Misses", QString::number(stats.misses()) },
+        { "Seen-Misses", QString::number(stats.seenMisses()) },
+        };
+    model->setData(data);
 }
 
 MainWindow::~MainWindow()
