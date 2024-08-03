@@ -20,9 +20,10 @@ class MemoryCard : public AnimatedWidget
 public:
     Q_PROPERTY(double angle READ angle WRITE setAngle NOTIFY angleChanged)
 
-    explicit MemoryCard(MemoryPanel *panel, const QString &key, const QPixmap &pixmap, const QPixmap &backPixmap, QWidget *parent = nullptr);
+    explicit MemoryCard(MemoryPanel *panel, const QString &key, int index, const QPixmap &pixmap, const QPixmap &backPixmap, QWidget *parent = nullptr);
 
     const QString& key() const;
+    int index() const;
 
     FlipState flipState() const;
     QString flipStateAsString() const;
@@ -46,6 +47,7 @@ protected:
 private:
     MemoryPanel *m_panel;
     QString m_key;
+    int m_index;
     QPixmap m_pixmap;
     QPixmap m_backPixmap;
     QTransform m_transform;

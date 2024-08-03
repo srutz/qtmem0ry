@@ -6,9 +6,10 @@
 #include "memorycard.h"
 #include "memorypanel.h"
 
-MemoryCard::MemoryCard(MemoryPanel *panel, const QString &key, const QPixmap &pixmap, const QPixmap &backPixmap, QWidget *parent) :
+MemoryCard::MemoryCard(MemoryPanel *panel, const QString &key, int index, const QPixmap &pixmap, const QPixmap &backPixmap, QWidget *parent) :
     m_panel(panel),
     m_key(key),
+    m_index(index),
     m_pixmap(pixmap),
     m_backPixmap(backPixmap),
     m_present(true),
@@ -25,6 +26,10 @@ MemoryCard::MemoryCard(MemoryPanel *panel, const QString &key, const QPixmap &pi
 
 const QString& MemoryCard::key() const {
     return m_key;
+}
+
+int MemoryCard::index() const {
+    return m_index;
 }
 
 FlipState MemoryCard::flipState() const
@@ -166,6 +171,7 @@ void MemoryCard::paintEvent(QPaintEvent* event)
             painter.drawText(0, y, text);
             y += h;
         };
+        printLine("key=" + this->key() + ", index=" + QString::number(this->index()));
         printLine("flipState=" + this->flipStateAsString());
         printLine(QString("present=") + (present() ? "true" : "false"));
     }

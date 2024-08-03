@@ -79,7 +79,7 @@ void MemoryPanel::setupChildren()
         auto squaredPixmap = pixmap.copy(cropRect);
         for (auto j = 0; j < 2; j++) {
             QString key = QString::asprintf("key%03d", i);
-            auto card = new MemoryCard(this, key, squaredPixmap, backgroundPixmap, this);
+            auto card = new MemoryCard(this, key, j, squaredPixmap, backgroundPixmap, this);
             card->setFixedSize(192, 192);
             card->show();
             m_order.push_back(i * 2 + j);
@@ -256,15 +256,19 @@ void MemoryPanel::checkForMatch() {
             }
             m_stats.setHits(m_stats.hits() + 1);
         } else {
-            if (m_firstCard && m_seen.contains(m_firstCard->key())) {
-                m_stats.setSeenMisses(m_stats.seenMisses() + 1);
+            if (m_firstCard) {
+                // chance to uncover a card missed here
+                auto otherCardKey = QPair<QString,int>(m_firstCard->key(), m_firstCard->index() == 0 ? 1 : 0);
+                if (m_seen.contains(otherCardKey)) {
+                    m_stats.setSeenMisses(m_stats.seenMisses() + 1);
+                }
             }
             card1->flip();
             card2->flip();
             m_stats.setMisses(m_stats.misses() + 1);
         }
         for (auto card : visibleCards) {
-            m_seen.insert(card->key());
+            m_seen.insert(QPair<QString,int>(card->key(), card->index()));
         }
         updateStatusMessage();
     }

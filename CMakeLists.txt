@@ -34,7 +34,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QtMem0ry
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        gamescene.h gamescene.cpp
+
 
 
 
