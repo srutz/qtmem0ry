@@ -1,5 +1,6 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
+#include <QToolBar>
 #include <keyvaluetablemodel.h>
 
 
@@ -29,32 +30,24 @@ MainWindow::MainWindow(QWidget *parent)
         dialog.exec();
     });
     QObject::connect(ui->actionStart_Game, &QAction::triggered, this, [=] {
-        auto memoryPanel = this->findChild<MemoryPanel*>();
-        switch (memoryPanel->gameState()) {
-        case STOPPED:
-        case OVER:
-            memoryPanel->setGameState(GameState::STARTED);
-            break;
-        case STARTED:
-            Util::showMessage("Game is already started");
-            break;
-        }
+        startGame();
     });
     QObject::connect(ui->actionEnd_Game, &QAction::triggered, this, [=] {
-        auto memoryPanel = this->findChild<MemoryPanel*>();
-        switch (memoryPanel->gameState()) {
-        case STOPPED:
-        case OVER:
-            Util::showMessage("Game is already stopped");
-            break;
-        case STARTED:
-            auto reply = QMessageBox::question(this, "Confirmation", "Are you sure you want to stop the game?", QMessageBox::Yes | QMessageBox::No);
-            if (reply == QMessageBox::Yes) {
-                memoryPanel->setGameState(GameState::STOPPED);
-            }
-            break;
-        }
+        endGame();
     });
+
+    auto toolbar = new QToolBar("Main toolbar", this);
+    addToolBar(toolbar);
+    auto buttonAction1 = new QAction(QIcon(":/images/play.png"), "Start Game", this);
+    connect(buttonAction1, &QAction::triggered, this, [=] () {
+        startGame();
+    });
+    toolbar->addAction(buttonAction1);
+    auto buttonAction2 = new QAction(QIcon(":/images/stop.png"), "Stop Game", this);
+    connect(buttonAction2, &QAction::triggered, this, [=] () {
+        endGame();
+    });
+    toolbar->addAction(buttonAction2);
 
     auto memoryPanel = new MemoryPanel(this);
     auto layout = new QVBoxLayout(ui->content);
@@ -87,6 +80,35 @@ void MainWindow::updateStats(const Stats& stats) {
         { "Seen-Misses", QString::number(stats.seenMisses()) },
         };
     model->setData(data);
+}
+
+void MainWindow::startGame() {
+    auto memoryPanel = this->findChild<MemoryPanel*>();
+    switch (memoryPanel->gameState()) {
+    case STOPPED:
+    case OVER:
+        memoryPanel->setGameState(GameState::STARTED);
+        break;
+    case STARTED:
+        Util::showMessage("Game is already started");
+        break;
+    }
+}
+
+void MainWindow::endGame() {
+    auto memoryPanel = this->findChild<MemoryPanel*>();
+    switch (memoryPanel->gameState()) {
+    case STOPPED:
+    case OVER:
+        Util::showMessage("Game is already stopped");
+        break;
+    case STARTED:
+        auto reply = QMessageBox::question(this, "Confirmation", "Are you sure you want to stop the game?", QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            memoryPanel->setGameState(GameState::STOPPED);
+        }
+        break;
+    }
 }
 
 MainWindow::~MainWindow()

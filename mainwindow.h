@@ -22,6 +22,8 @@ private:
     Ui::MainWindow *ui;
 
     void updateStats(const Stats& stats);
+    void startGame();
+    void endGame();
 
 };
 #endif // MAINWINDOW_H
