@@ -80,6 +80,7 @@ void MemoryPanel::setupChildren()
         for (auto j = 0; j < 2; j++) {
             QString key = QString::asprintf("key%03d", i);
             auto card = new MemoryCard(this, key, j, squaredPixmap, backgroundPixmap, this);
+            card->setPosition(QPoint(-1000, -1000));
             card->setFixedSize(192, 192);
             card->show();
             m_order.push_back(i * 2 + j);
