@@ -30,8 +30,8 @@
 
 
 MemoryPanel::MemoryPanel(QWidget *parent):
-    m_gameState(GameState::STOPPED),
-    QWidget(parent)
+    QWidget(parent),
+    m_gameState(GameState::STOPPED)
 {
 }
 
@@ -88,6 +88,7 @@ void MemoryPanel::setupChildren()
     });
     QObject::connect(downloadThread, &QThread::finished, downloadThread, &QObject::deleteLater);
     downloadThread->start();
+
 }
 
 void MemoryPanel::updateStatusMessage()
@@ -231,7 +232,6 @@ std::vector<MemoryCard*> MemoryPanel::getVisibleCards() {
 
 void MemoryPanel::checkForMatch() {
     auto visibleCards = getVisibleCards();
-    qDebug() << "check for match " << visibleCards.size();
     if (visibleCards.size() > 2) {
         // wrong invariant, only show 2 cards max
         assert(false);
@@ -268,12 +268,9 @@ void MemoryPanel::checkForMatch() {
             card2->flip();
             m_stats.setMisses(m_stats.misses() + 1);
         }
-        for (auto card : visibleCards) {
+        for (const auto &card : visibleCards) {
             m_seen.insert(QPair<QString,int>(card->key(), card->index()));
         }
         updateStatusMessage();
     }
 }
-
-
-

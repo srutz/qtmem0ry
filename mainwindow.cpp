@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
         QApplication::exit(0);
     });
     QObject::connect(ui->action_About_QtMem0ry, &QAction::triggered, this, [] {
-        AboutDialog dialog;
+        AboutDialog dialog(QApplication::activeWindow());
         dialog.exec();
     });
     QObject::connect(ui->actionStart_Game, &QAction::triggered, this, [=] {
@@ -51,9 +51,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto memoryPanel = new MemoryPanel(this);
     auto layout = new QVBoxLayout(ui->content);
+    ui->content->setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(memoryPanel);
     memoryPanel->setupChildren();
+    ui->content->setStyleSheet("background-color: #3498db;");
+
 
     auto splitter = ui->splitter;
     QList<int> sizes;
@@ -75,10 +78,11 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::updateStats(const Stats& stats) {
     auto model = dynamic_cast<KeyValueTableModel*>(ui->tableView->model());
     QVector<QPair<QString, QString>> data = {
+        { "Total-Moves", QString::number(stats.moves()) },
         { "Hits", QString::number(stats.hits()) },
         { "Misses", QString::number(stats.misses()) },
         { "Seen-Misses", QString::number(stats.seenMisses()) },
-        };
+    };
     model->setData(data);
 }
 

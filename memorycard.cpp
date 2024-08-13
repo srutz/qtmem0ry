@@ -151,9 +151,17 @@ void MemoryCard::paintEvent(QPaintEvent* event)
             painter.translate(-center);
 
             // Draw the pixmap centered in the widget
+
+            QRect pixRect = this->rect();
+            auto bw = 12;
+            pixRect.setRect(pixRect.x() + bw, pixRect.y() + bw, pixRect.width() - 2 * bw, pixRect.height() - 2 * bw);
+
+            painter.setPen(QColor::fromRgb(255, 255, 255, 255));
+            painter.setBrush(QColor::fromRgb(255, 255, 255, 255));
+            painter.drawRoundedRect(this->rect(), 8, 8);
             QPoint topLeft((width() - m_pixmap.width()) / 2, (height() - m_pixmap.height()) / 2);
             auto p = ((m_angle) <= 90.0 || (m_angle) >= 270.0) ? m_pixmap : m_backPixmap;
-            painter.drawPixmap(this->rect(), p);
+            painter.drawPixmap(pixRect, p);
         }
     }
 

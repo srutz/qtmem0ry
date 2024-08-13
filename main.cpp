@@ -4,10 +4,23 @@
 #include <QApplication>
 #include <QThread>
 
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#include <processthreadsapi.h>
+#elif defined(Q_OS_LINUX)
+#include <pthread.h>
+#elif defined(Q_OS_MACOS)
+#include <pthread.h>
+#endif
+
 
 int main(int argc, char *argv[])
 {
-    QThread::currentThread()->setObjectName("Qt Mainthread");
+#ifdef Q_OS_WIN
+    SetThreadDescription(GetCurrentThread(), QString::fromUtf8(name).toStdWString().c_str());
+#elif defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+    pthread_setname_np(pthread_self(), "Qt Mainthread!");
+#endif
 
     QApplication a(argc, argv);
     MainWindow w;

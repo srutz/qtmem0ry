@@ -9,8 +9,8 @@
             "name": "QtMem0ry",
             "args": [],
             "request": "launch",
-            "program": "${workspaceRoot}/build/QtMem0ry",
-            "cwd": "${workspaceRoot}/build",
+            "program": "${workspaceRoot}/build/Desktop-Debug/QtMem0ry",
+            "cwd": "${workspaceRoot}/build/Desktop-Debug",
             "preLaunchTask": "CMake: build",
         }
     ]

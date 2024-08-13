@@ -89,7 +89,7 @@ QByteArray Util::loadFile(const QString &path)
 
 int Util::showMessage(const QString &message)
 {
-    QMessageBox messageBox;
+    QMessageBox messageBox(QApplication::activeWindow());
     messageBox.setWindowTitle("Message");
     messageBox.setText(message);
     messageBox.setIcon(QMessageBox::Information);

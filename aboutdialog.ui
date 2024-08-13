@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
-    <height>306</height>
+    <width>618</width>
+    <height>425</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,10 +28,13 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>## QM</string>
+        <string/>
        </property>
        <property name="textFormat">
         <enum>Qt::MarkdownText</enum>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="resources.qrc">:/images/pexels-brain.png</pixmap>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -47,11 +50,12 @@
         <string>## QtMem0ry
 
 A simple Mem0ry Game in Qt (C++)
-The Cards are Widgets.
 
-Excercise code from Stepan
+The Cards are Widgets.Excercise code from Stepan.
 
-Contact [stepan.rutz AT stepanrutz.com](mailto:stepan.rutz@stepanrutz.com)</string>
+Images are Free images downloaded from Pexels.com
+
+[stepan.rutz AT stepanrutz.com](mailto:stepan.rutz@stepanrutz.com)</string>
        </property>
        <property name="textFormat">
         <enum>Qt::MarkdownText</enum>
@@ -78,7 +82,9 @@ Contact [stepan.rutz AT stepanrutz.com](mailto:stepan.rutz@stepanrutz.com)</stri
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
