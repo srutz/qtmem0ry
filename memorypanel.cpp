@@ -31,7 +31,8 @@
 
 MemoryPanel::MemoryPanel(QWidget *parent):
     QWidget(parent),
-    m_gameState(GameState::STOPPED)
+    m_gameState(GameState::STOPPED),
+    m_gameCount(0)
 {
 }
 
@@ -132,7 +133,11 @@ void MemoryPanel::layoutChildren()
         for (auto card : cards) {
             auto x = i % 2 == 0 ? - 200 : aw + 200;
             auto y = i % size < size / 2 ? - 200 : ah + 200;
-            card->setPositionA(QPoint(x, y), 500);
+            if (m_gameCount <= 0) {
+                card->setPosition(QPoint(x, y));
+            } else {
+                card->setPositionA(QPoint(x, y), 500);
+            }
             i++;
         }
         return;
@@ -174,6 +179,7 @@ void MemoryPanel::setGameState(GameState gameState)
     }
     this->m_gameState = gameState;
     if (this->m_gameState == GameState::STARTED) {
+        m_gameCount++;
         /* cleanup */
         std::random_device rd;
         std::default_random_engine eng(rd());

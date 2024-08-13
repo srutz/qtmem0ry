@@ -2,11 +2,11 @@
 #include <QPainter>
 #include <QDebug>
 #include <QPropertyAnimation>
-#include "util.h"
 #include "memorycard.h"
 #include "memorypanel.h"
 
 MemoryCard::MemoryCard(MemoryPanel *panel, const QString &key, int index, const QPixmap &pixmap, const QPixmap &backPixmap, QWidget *parent) :
+    AnimatedWidget(parent),
     m_panel(panel),
     m_key(key),
     m_index(index),
@@ -15,12 +15,12 @@ MemoryCard::MemoryCard(MemoryPanel *panel, const QString &key, int index, const 
     m_present(true),
     m_flipState(FlipState::FLIPPED),
     m_angle(180),
-    angleAnimation(nullptr),
-    AnimatedWidget{parent}
+    angleAnimation(nullptr)
 {
     m_transform.reset();
 
     this->setCursor(Qt::PointingHandCursor);
+    setPosition(QPoint(-1000, -1000));
     //qDebug() << "the map: " << pixmap.width() << " x " << pixmap.height();
 }
 

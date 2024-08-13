@@ -93,6 +93,7 @@ protected:
 private:
     std::vector<int> m_order;
     GameState m_gameState;
+    int m_gameCount;
     QSet<QPair<QString,int>> m_seen;
     Stats m_stats;
     MemoryCard *m_firstCard; // remember the first card for stats
