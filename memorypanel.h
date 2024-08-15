@@ -91,6 +91,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    int m_size;
     std::vector<int> m_order;
     GameState m_gameState;
     int m_gameCount;

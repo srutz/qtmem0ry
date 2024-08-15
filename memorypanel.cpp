@@ -31,6 +31,7 @@
 
 MemoryPanel::MemoryPanel(QWidget *parent):
     QWidget(parent),
+    m_size(4),
     m_gameState(GameState::STOPPED),
     m_gameCount(0)
 {
@@ -49,7 +50,7 @@ void MemoryPanel::setupChildren()
 
     QThread *downloadThread = new QThread();
     downloadThread->setObjectName("downloader thread");
-    DownloadHandler *handler = new DownloadHandler();
+    DownloadHandler *handler = new DownloadHandler(m_size * m_size / 2);
     handler->moveToThread(downloadThread);
 
     QObject::connect(downloadThread, &QThread::started, handler, &DownloadHandler::download);
@@ -59,8 +60,7 @@ void MemoryPanel::setupChildren()
         this->updateStatusMessage();
     });
 
-    QObject::connect(handler, &DownloadHandler::imageCompleted, this, [=](int i, int n, QByteArray data) {
-        qDebug() << "image " << i << " downloaded " << QThread::currentThread()->objectName();
+    QObject::connect(handler, &DownloadHandler::imageCompleted, this, [=](int i, int n, QByteArray data, QString filename) {
         Util::findStatusBar()->showMessage(QString("Retrieved Image %1 of %2").arg(i + 1).arg(n), 5000);
         QPixmap pixmap;
         bool success = pixmap.loadFromData(data);
@@ -79,12 +79,13 @@ void MemoryPanel::setupChildren()
         }
         auto squaredPixmap = pixmap.copy(cropRect);
         for (auto j = 0; j < 2; j++) {
-            QString key = QString::asprintf("key%03d", i);
+            auto key = QString::asprintf("key%03d", i);
             auto card = new MemoryCard(this, key, j, squaredPixmap, backgroundPixmap, this);
+            QFileInfo info(filename);
+            card->setFilename(info.baseName());
             card->setPosition(QPoint(-1000, -1000));
             card->setFixedSize(192, 192);
             card->show();
-            m_order.push_back(i * 2 + j);
         }
     });
     QObject::connect(downloadThread, &QThread::finished, downloadThread, &QObject::deleteLater);
@@ -127,10 +128,13 @@ void MemoryPanel::layoutChildren()
             cards.push_back(card);
         }
     }
-    auto size = static_cast<int>(sqrt(cards.size()));
+
+    auto size = m_size;
+
     if (m_gameState != GameState::STARTED) {
         auto i = 0;
         for (auto card : cards) {
+            card->show();
             auto x = i % 2 == 0 ? - 200 : aw + 200;
             auto y = i % size < size / 2 ? - 200 : ah + 200;
             if (m_gameCount <= 0) {
@@ -144,19 +148,29 @@ void MemoryPanel::layoutChildren()
     }
     auto padding = 0;
     auto dist = 10;
-    auto tw = 192;
-    auto th = 192;
+    int tw = 0;
+    switch (size) {
+    case 4: tw = 192; break;
+    case 6: tw = 120; break;
+    }
+
+    auto th = tw;
     auto wantedw = size * tw + (size - 1) * dist;
     auto wantedh = size * th + (size - 1) * dist;
     auto x0 = (int) floor(.5 * (aw - wantedw));
     auto y0 = (int) floor(.5 * (ah - wantedh));
     //qDebug() << "layoutScene(): aw=" << aw << ", ah=" << ah << ", x0" << x0 << ", size=" << cards.size();
     auto y = padding + y0;
+    for (int i = 0; i < cards.size(); i++) {
+        cards[i]->hide();
+    }
     for (int row = 0; row < size; row++) {
         auto x = padding + x0;
         for (int col = 0; col < size; col++) {
-            auto item = cards[m_order[row * size + col]];
-            item->setPositionA(QPoint(x, y), 500);
+            auto card = cards[m_order[row * size + col]];
+            card->setFixedSize(tw, th);
+            card->setPositionA(QPoint(x, y), 500);
+            card->show();
             x += tw + dist;
         }
         y += tw + dist;
@@ -183,6 +197,10 @@ void MemoryPanel::setGameState(GameState gameState)
         /* cleanup */
         std::random_device rd;
         std::default_random_engine eng(rd());
+        m_order.resize(m_size * m_size);
+        for (auto i = 0, n = m_size * m_size; i < n; i++) {
+            m_order[i] = i;
+        }
         std::shuffle(m_order.begin(), m_order.end(), eng);
         for(auto child : children()) {
             auto card = qobject_cast<MemoryCard*>(child);
@@ -195,6 +213,8 @@ void MemoryPanel::setGameState(GameState gameState)
         }
         m_stats.reset();
         m_seen.clear();
+    } else if (this->m_gameState == GameState::OVER) {
+        Util::showMessage(QString("Game completed. Number of moves: %1.").arg(m_stats.moves()));
     }
     layoutChildren();
     updateStatusMessage();
@@ -252,7 +272,8 @@ void MemoryPanel::checkForMatch() {
             card2->setPresent(false);
 
             auto presentCount = 0;
-            for(auto child : children()) {
+            auto children_ = children();
+            for(auto child : children_) {
                 auto card = qobject_cast<MemoryCard*>(child);
                 if (card && card->present()) {
                     presentCount++;

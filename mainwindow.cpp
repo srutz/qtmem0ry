@@ -6,8 +6,6 @@
 
 #include <cstddef>
 #include <cmath>
-#include <vector>
-#include <algorithm>
 
 #include "aboutdialog.h"
 #include "mainwindow.h"
@@ -63,8 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     sizes << 240 << 1000;
     splitter->setSizes(sizes);
 
-    QVector<QPair<QString, QString>> data = {
-    };
+    QVector<QPair<QString, QString>> data = {};
     auto model = new KeyValueTableModel();
     model->setData(data);
     ui->tableView->setModel(model);

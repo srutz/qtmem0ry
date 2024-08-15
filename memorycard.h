@@ -29,6 +29,9 @@ public:
     QString flipStateAsString() const;
     void flip(std::function<void()> onCompleteCallback = nullptr);
 
+    QString filename() const;
+    void setFilename(QString filename);
+
     bool present() const;
     void setPresent(bool);
 
@@ -51,6 +54,7 @@ private:
     QPixmap m_pixmap;
     QPixmap m_backPixmap;
     QTransform m_transform;
+    QString m_filename;
 
     bool m_present;
     FlipState m_flipState;

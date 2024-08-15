@@ -52,6 +52,14 @@ QString MemoryCard::flipStateAsString() const {
     }
 }
 
+QString MemoryCard::filename() const {
+    return m_filename;
+}
+
+void MemoryCard::setFilename(QString filename) {
+    this->m_filename = filename;
+}
+
 bool MemoryCard::present() const {
     return m_present;
 }
@@ -153,12 +161,18 @@ void MemoryCard::paintEvent(QPaintEvent* event)
             // Draw the pixmap centered in the widget
 
             QRect pixRect = this->rect();
-            auto bw = 12;
+            auto bw = 6;
+            if (pixRect.width() >= 192) {
+                bw = 12;
+            } else if (pixRect.width() >= 140) {
+                bw = 8;
+            }
+
             pixRect.setRect(pixRect.x() + bw, pixRect.y() + bw, pixRect.width() - 2 * bw, pixRect.height() - 2 * bw);
 
             painter.setPen(QColor::fromRgb(255, 255, 255, 255));
             painter.setBrush(QColor::fromRgb(255, 255, 255, 255));
-            painter.drawRoundedRect(this->rect(), 8, 8);
+            painter.drawRoundedRect(this->rect(), bw - 2, bw - 2);
             QPoint topLeft((width() - m_pixmap.width()) / 2, (height() - m_pixmap.height()) / 2);
             auto p = ((m_angle) <= 90.0 || (m_angle) >= 270.0) ? m_pixmap : m_backPixmap;
             painter.drawPixmap(pixRect, p);
@@ -179,6 +193,7 @@ void MemoryCard::paintEvent(QPaintEvent* event)
             painter.drawText(0, y, text);
             y += h;
         };
+        printLine(m_filename);
         printLine("key=" + this->key() + ", index=" + QString::number(this->index()));
         printLine("flipState=" + this->flipStateAsString());
         printLine(QString("present=") + (present() ? "true" : "false"));

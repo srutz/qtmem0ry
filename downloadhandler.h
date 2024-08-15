@@ -10,17 +10,18 @@ class DownloadHandler : public QObject {
     Q_OBJECT
 
 public:
-    explicit DownloadHandler(QObject *parent = nullptr);
+    explicit DownloadHandler(int count, QObject *parent = nullptr);
     ~DownloadHandler();
 
 public slots:
     void download();
 
 signals:
-    void imageCompleted(int i, int n, const QByteArray &data);
+    void imageCompleted(int i, int n, const QByteArray &data, QString filename);
     void completed();
 
 private:
+    int m_count;
 
 };
 #endif // DOWNLOADHANDLER_H

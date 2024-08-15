@@ -14,24 +14,28 @@ const QString images[] = {
     "https://images.pexels.com/photos/67552/giraffe-tall-mammal-africa-67552.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/325045/pexels-photo-325045.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/162140/duckling-birds-yellow-fluffy-162140.jpeg?auto=compress&cs=tinysrgb&h=350",
-    /*
     "https://images.pexels.com/photos/219906/pexels-photo-219906.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/17811/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/97533/pexels-photo-97533.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/635499/pexels-photo-635499.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/162203/panthera-tigris-altaica-tiger-siberian-amurtiger-162203.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/326012/pexels-photo-326012.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/39857/leopard-leopard-spots-animal-wild-39857.jpeg?auto=compress&cs=tinysrgb&h=350",
-    */
+    "https://images.pexels.com/photos/64219/dolphin-marine-mammals-water-sea-64219.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/76957/tree-frog-frog-red-eyed-amphibian-76957.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/70080/elephant-africa-african-elephant-kenya-70080.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/53581/bald-eagles-bald-eagle-bird-of-prey-adler-53581.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/73825/osprey-adler-bird-of-prey-raptor-73825.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/86405/penguin-funny-blue-water-86405.jpeg?auto=compress&cs=tinysrgb&h=350",
+
     /*
+    "https://images.pexels.com/photos/635499/pexels-photo-635499.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/326012/pexels-photo-326012.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/162203/panthera-tigris-altaica-tiger-siberian-amurtiger-162203.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/236599/pexels-photo-236599.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/572861/pexels-photo-572861.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/847393/pexels-photo-847393.jpeg?auto=compress&cs=tinysrgb&h=350",
+    "https://images.pexels.com/photos/39857/leopard-leopard-spots-animal-wild-39857.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/2295744/pexels-photo-2295744.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/1076758/pexels-photo-1076758.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/45853/grey-crowned-crane-bird-crane-animal-45853.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/86405/penguin-funny-blue-water-86405.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/70080/elephant-africa-african-elephant-kenya-70080.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/460775/pexels-photo-460775.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/50577/hedgehog-animal-baby-cute-50577.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/144234/bull-landscape-nature-mammal-144234.jpeg?auto=compress&cs=tinysrgb&h=350",
@@ -46,8 +50,6 @@ const QString images[] = {
     "https://images.pexels.com/photos/45246/green-tree-python-python-tree-python-green-45246.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/4588065/pexels-photo-4588065.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/1335971/pexels-photo-1335971.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/64219/dolphin-marine-mammals-water-sea-64219.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/76957/tree-frog-frog-red-eyed-amphibian-76957.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/53125/elephant-tusk-ivory-animal-53125.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/1829979/pexels-photo-1829979.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/75973/pexels-photo-75973.jpeg?auto=compress&cs=tinysrgb&h=350",
@@ -58,9 +60,6 @@ const QString images[] = {
     "https://images.pexels.com/photos/69932/tabby-cat-close-up-portrait-69932.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/36347/cow-pasture-animal-almabtrieb.jpg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/1059823/pexels-photo-1059823.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/53581/bald-eagles-bald-eagle-bird-of-prey-adler-53581.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/73825/osprey-adler-bird-of-prey-raptor-73825.jpeg?auto=compress&cs=tinysrgb&h=350",
-    "https://images.pexels.com/photos/236599/pexels-photo-236599.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/56733/pexels-photo-56733.jpeg?auto=compress&cs=tinysrgb&h=350",
     "https://images.pexels.com/photos/802112/pexels-photo-802112.jpeg?auto=compress&cs=tinysrgb&h=350",
@@ -78,7 +77,7 @@ const QString images[] = {
 
 
 
-DownloadHandler::DownloadHandler(QObject *parent) : QObject(parent) {
+DownloadHandler::DownloadHandler(int count, QObject *parent) : QObject(parent), m_count(count) {
     qDebug() << "DownloadHandler()";
 }
 
@@ -98,18 +97,15 @@ void DownloadHandler::download() {
     }
 
     QString apiKey = getenv("PEXELSAPIKEY");
-    apiKey = "Zkm7aXuvJSw9Hp6uC3L1Nu70wPLU0zWIIRE8eJrfB06B72kSf4xwhVeO";
 
-    qDebug() << "image download starting on thread " << QThread::currentThread()->objectName();
-    qDebug() << "using apiKey: " << apiKey;
-    auto imageCount = sizeof(images) / sizeof(QString);
-    for (auto i = 0; i < imageCount; i++) {
-        auto filePath = dir.filePath(QString::asprintf("image_%02d.jpg", i + 1));
-        auto file = QFile(filePath);
+    for (auto i = 0; i < m_count; i++) {
+        auto filename = dir.filePath(QString::asprintf("image_%02d.jpg", i + 1));
+        auto file = QFile(filename);
         QByteArray data;
         if (file.exists()) {
-            data = Util::loadFile(filePath);
+            data = Util::loadFile(filename);
         } else {
+            qDebug() << "image download starting on thread " << QThread::currentThread()->objectName();
             QString url(images[i]);
             auto result = Util::downloadUrl(url, { { "Authorization", apiKey }});
             if (result.code != 200) {
@@ -120,13 +116,13 @@ void DownloadHandler::download() {
                 qWarning() << "Could not open file for writing";
             }
             if (file.write(result.data) == -1) {
-                qWarning() << "Failed to write to file " << filePath;
+                qWarning() << "Failed to write to file " << filename;
             }
             file.close();
             qDebug() << "download completed: " << url;
             data = result.data;
         }
-        emit imageCompleted(i, imageCount, data);
+        emit imageCompleted(i, m_count, data, filename);
     }
     qDebug() << "completed " << this << " on thread " << QThread::currentThread()->objectName();
     emit completed();
