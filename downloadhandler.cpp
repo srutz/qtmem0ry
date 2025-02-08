@@ -1,8 +1,10 @@
 
 #include "downloadhandler.h"
 #include "util.h"
+#include "datafetcher.h"
 
 #include <QThread>
+#include <QApplication>
 
 
 const QString images[] = {
@@ -86,6 +88,17 @@ DownloadHandler::~DownloadHandler() {
 }
 
 void DownloadHandler::download() {
+
+    qDebug() << "start of sync on thread " << QThread::currentThread()->objectName();
+    DataFetcher::FetchOptions options({ .url = "https://dummyjson.com/recipes/2" });
+    auto r = DataFetcher::downloadSync(options);
+    qDebug() << "  end of sync on thread " << QThread::currentThread()->objectName();
+    if (r.code != 200) {
+        qWarning() << "download failed";
+    } else {
+        qDebug() << "  got data" << r.data.size() << "bytes" << ": utf8=" << QString::fromUtf8(r.data);
+    }
+
     QString resourceFolder = QDir(QDir::homePath()).filePath("qtmemory-resources");
     QDir dir(resourceFolder);
     if (!dir.exists()) {
@@ -95,7 +108,6 @@ void DownloadHandler::download() {
             qDebug() << "Failed to create temporary directory.";
         }
     }
-
     QString apiKey = getenv("PEXELSAPIKEY");
 
     for (auto i = 0; i < m_count; i++) {
@@ -107,10 +119,11 @@ void DownloadHandler::download() {
         } else {
             qDebug() << "image download starting on thread " << QThread::currentThread()->objectName();
             QString url(images[i]);
-            auto result = Util::downloadUrl(url, { { "Authorization", apiKey }});
+            //auto result = Util::downloadUrl(url, { { "Authorization", apiKey }});
+            auto result = DataFetcher::downloadSync({ .url = url, .headers = { { "Authorization", apiKey } }});
             if (result.code != 200) {
-                qWarning() << "download failed " << url;
-                return;
+                qWarning() << "download failed " << url << ", code=" << result.code << ", error=" << result.error.value_or("unknown");
+                QApplication::exit(1);
             }
             if (!file.open(QIODevice::WriteOnly)) {
                 qWarning() << "Could not open file for writing";

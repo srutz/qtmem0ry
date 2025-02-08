@@ -4,11 +4,6 @@
 #include <QStatusBar>
 #include <QString>
 
-struct ErrorResponse {
-    int code;
-    QString message;
-    QByteArray data;
-};
 
 class Util
 {
@@ -22,8 +17,6 @@ public:
             return value == arg;
         });
     }
-
-    static ErrorResponse downloadUrl(const QString &url, const QMap<QString,QString> &headers);
 
     static QStatusBar* findStatusBar();
 

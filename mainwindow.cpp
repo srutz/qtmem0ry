@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVector<QPair<QString, QString>> data = {};
     auto model = new KeyValueTableModel();
     model->setData(data);
+    ui->tableView->setContentsMargins(0, 0, 0, 0);
     ui->tableView->setModel(model);
 
     QObject::connect(&memoryPanel->stats(), &Stats::changed, this, [=] (const Stats& stats) {

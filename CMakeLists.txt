@@ -17,7 +17,6 @@ set(CMAKE_C_FLAGS "-O0")
 
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Network)
-find_package(CURL REQUIRED)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -32,6 +31,8 @@ set(PROJECT_SOURCES
     aboutdialog.h aboutdialog.cpp aboutdialog.ui
     keyvaluetablemodel.h keyvaluetablemodel.cpp
     resources.qrc
+    raiiguard.h
+    datafetcher.h datafetcher.cpp
 )
 
 qt_add_executable(QtMem0ry 
@@ -39,6 +40,6 @@ qt_add_executable(QtMem0ry
     ${PROJECT_SOURCES}
 )
 
-target_link_libraries(QtMem0ry PRIVATE Qt6::Widgets Qt6::Network ${CURL_LIBRARIES})
+target_link_libraries(QtMem0ry PRIVATE Qt6::Widgets Qt6::Network)
 
 qt_finalize_executable(QtMem0ry)
