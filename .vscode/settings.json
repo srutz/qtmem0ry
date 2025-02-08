@@ -1,0 +1,8 @@
+{
+    "cmake.buildDirectory": "${workspaceFolder}/build/Desktop-Debug",
+    "files.associations": {
+        "qthread": "cpp"
+    },
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+}
