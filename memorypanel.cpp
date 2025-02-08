@@ -84,7 +84,7 @@ void MemoryPanel::setupChildren()
             QFileInfo info(filename);
             card->setFilename(info.baseName());
             card->setPosition(QPoint(-1000, -1000));
-            card->setFixedSize(192, 192);
+            card->setFixedSize(SIZE_4, SIZE_4);
             card->show();
         }
     });
@@ -150,8 +150,8 @@ void MemoryPanel::layoutChildren()
     auto dist = 10;
     int tw = 0;
     switch (size) {
-    case 4: tw = 192; break;
-    case 6: tw = 120; break;
+    case 4: tw = SIZE_4; break;
+    case 6: tw = SIZE_6; break;
     }
 
     auto th = tw;

@@ -162,9 +162,9 @@ void MemoryCard::paintEvent(QPaintEvent* event)
 
             QRect pixRect = this->rect();
             auto bw = 6;
-            if (pixRect.width() >= 192) {
+            if (pixRect.width() >= SIZE_4) {
                 bw = 12;
-            } else if (pixRect.width() >= 140) {
+            } else if (pixRect.width() >= SIZE_6) {
                 bw = 8;
             }
 

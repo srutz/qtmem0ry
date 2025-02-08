@@ -12,6 +12,8 @@
 
 class MemoryPanel;
 
+const int SIZE_4 = 136, SIZE_6 = 128;
+
 enum FlipState { UNFLIPPED = 1, FLIPPING = 2,  FLIPPED = 3, UNFLIPPING = 4};
 
 class MemoryCard : public AnimatedWidget

@@ -88,17 +88,6 @@ DownloadHandler::~DownloadHandler() {
 }
 
 void DownloadHandler::download() {
-
-    qDebug() << "start of sync on thread " << QThread::currentThread()->objectName();
-    DataFetcher::FetchOptions options({ .url = "https://dummyjson.com/recipes/2" });
-    auto r = DataFetcher::downloadSync(options);
-    qDebug() << "  end of sync on thread " << QThread::currentThread()->objectName();
-    if (r.code != 200) {
-        qWarning() << "download failed";
-    } else {
-        qDebug() << "  got data" << r.data.size() << "bytes" << ": utf8=" << QString::fromUtf8(r.data);
-    }
-
     QString resourceFolder = QDir(QDir::homePath()).filePath("qtmemory-resources");
     QDir dir(resourceFolder);
     if (!dir.exists()) {
