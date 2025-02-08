@@ -66,6 +66,9 @@ MainWindow::MainWindow(QWidget *parent)
     model->setData(data);
     ui->tableView->setContentsMargins(0, 0, 0, 0);
     ui->tableView->setModel(model);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+
 
     QObject::connect(&memoryPanel->stats(), &Stats::changed, this, [=] (const Stats& stats) {
         updateStats(stats);
